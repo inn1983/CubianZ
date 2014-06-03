@@ -1,96 +1,96 @@
 [submodule "linux-sunxi"]
 	path = linux-sunxi
-	url = git@github.com:mmplayer/linux-sunxi.git
+	url = https://github.com/mmplayer/linux-sunxi.git
 [submodule "sunxi-boards"]
 	path = sunxi-boards
-	url = git@github.com:mmplayer/sunxi-boards.git
+	url = https://github.com/mmplayer/sunxi-boards.git
 [submodule "lib/PCRE"]
 	path = lib/PCRE
-	url = git@github.com:mmplayer/PCRE.git
+	url = https://github.com/mmplayer/PCRE.git
 [submodule "lib/APR"]
 	path = lib/APR
-	url = git@github.com:mmplayer/APR.git
+	url = https://github.com/mmplayer/APR.git
 [submodule "lib/APR-util"]
 	path = lib/APR-util
-	url = git@github.com:mmplayer/APR-util.git
+	url = https://github.com/mmplayer/APR-util.git
 [submodule "lib/APR-iconv"]
 	path = lib/APR-iconv
-	url = git@github.com:mmplayer/APR-iconv.git
+	url = https://github.com/mmplayer/APR-iconv.git
 [submodule "lib/httpd"]
 	path = lib/httpd
-	url = git@github.com:mmplayer/httpd.git
+	url = https://github.com/mmplayer/httpd.git
 [submodule "lib/php5"]
 	path = lib/php5
-	url = git@github.com:mmplayer/php.git
+	url = https://github.com/mmplayer/php.git
 [submodule "lib/MySQL"]
 	path = lib/MySQL
-	url = git@github.com:mmplayer/MySQL.git
+	url = https://github.com/mmplayer/MySQL.git
 [submodule "lib/ncurses"]
 	path = lib/ncurses
-	url = git@github.com:mmplayer/ncurses.git
+	url = https://github.com/mmplayer/ncurses.git
 [submodule "lib/openldap"]
 	path = lib/openldap
-	url = git@github.com:mmplayer/openldap.git
+	url = https://github.com/mmplayer/openldap.git
 [submodule "lib/zlib"]
 	path = lib/zlib
-	url = git@github.com:mmplayer/zlib.git
+	url = https://github.com/mmplayer/zlib.git
 [submodule "lib/openssl"]
 	path = lib/openssl
-	url = git@github.com:mmplayer/openssl.git
+	url = https://github.com/mmplayer/openssl.git
 [submodule "lib/readline"]
 	path = lib/readline
-	url = git@github.com:mmplayer/readline.git
+	url = https://github.com/mmplayer/readline.git
 [submodule "lib/SQLite"]
 	path = lib/SQLite
-	url = git@github.com:mmplayer/SQLite.git
+	url = https://github.com/mmplayer/SQLite.git
 [submodule "lib/expat"]
 	path = lib/expat
-	url = git@github.com:mmplayer/expat.git
+	url = https://github.com/mmplayer/expat.git
 [submodule "lib/lua"]
 	path = lib/lua
-	url = git@github.com:mmplayer/lua.git
+	url = https://github.com/mmplayer/lua.git
 [submodule "lib/bzip2"]
 	path = lib/bzip2
-	url = git@github.com:mmplayer/bzip2.git
+	url = https://github.com/mmplayer/bzip2.git
 [submodule "lib/jpeg"]
 	path = lib/jpeg
-	url = git@github.com:mmplayer/JPEG.git
+	url = https://github.com/mmplayer/JPEG.git
 [submodule "lib/png"]
 	path = lib/png
-	url = git@github.com:mmplayer/PNG.git
+	url = https://github.com/mmplayer/PNG.git
 [submodule "lib/freetype"]
 	path = lib/freetype
-	url = git@github.com:mmplayer/freetype.git
+	url = https://github.com/mmplayer/freetype.git
 [submodule "lib/xml2"]
 	path = lib/xml2
-	url = git@github.com:mmplayer/libxml2.git
+	url = https://github.com/mmplayer/libxml2.git
 [submodule "lib/cURL"]
 	path = lib/cURL
-	url = git@github.com:mmplayer/cURL.git
+	url = https://github.com/mmplayer/cURL.git
 [submodule "lib/mcrypt"]
 	path = lib/mcrypt
-	url = git@github.com:mmplayer/mcrypt.git
+	url = https://github.com/mmplayer/mcrypt.git
 [submodule "lib/gmp"]
 	path = lib/gmp
-	url = git@github.com:mmplayer/GMP.git
+	url = https://github.com/mmplayer/GMP.git
 [submodule "lib/xslt"]
 	path = lib/xslt
-	url = git@github.com:mmplayer/xslt.git
+	url = https://github.com/mmplayer/xslt.git
 [submodule "sunxi-tools"]
 	path = sunxi-tools
-	url = git@github.com:mmplayer/sunxi-tools.git
+	url = https://github.com/mmplayer/sunxi-tools.git
 [submodule "u-boot-sunxi"]
 	path = u-boot-sunxi
-	url = git@github.com:mmplayer/u-boot-sunxi.git
+	url = https://github.com/mmplayer/u-boot-sunxi.git
 [submodule "toolchain"]
 	path = toolchain
-	url = git@github.com:cubieplayer/Toolchain.git
+	url = https://github.com/cubieplayer/Toolchain.git
 [submodule "kernel-config"]
 	path = kernel-config
-	url = git@github.com:mmplayer/sunxi-kernel-config.git
+	url = https://github.com/mmplayer/sunxi-kernel-config.git
 [submodule "fsupdate"]
 	path = fsupdate
-	url = git@github.com:mmplayer/fsupdate.git
+	url = https://github.com/mmplayer/fsupdate.git
 [submodule "cubian-updates"]
 	path = cubian-updates
-	url = git@github.com:cubieplayer/cubian-updates.git
+	url = https://github.com/cubieplayer/cubian-updates.git
