@@ -155,7 +155,7 @@ export PATH=${TOOLCHAIN}/bin:$PATH
 export PATH=${TOOLCHAIN_LINARO_REPO}/bin:$PATH
 
 setupTools() {
-installpackages "debootstrap" "qemu-user-static" "build-essential" "u-boot-tools" "git" "binfmt-support" "libusb-1.0-0-dev" "pkg-config" "libncurses5-dev" "debian-archive-keyring" "expect" "kpartx" "p7zip-full" "e2fsprogs" "dch" "lintian"
+installpackages "debootstrap" "qemu-user-static" "build-essential" "u-boot-tools" "git" "binfmt-support" "libusb-1.0-0-dev" "pkg-config" "libncurses5-dev" "debian-archive-keyring" "expect" "kpartx" "p7zip-full" "e2fsprogs" "devscripts" "lintian"
 }
 
 setupLinaroToolchain(){
@@ -284,6 +284,7 @@ umountPseudoFs
 }
 
 installPackages(){
+echo "prepareEnv"
 prepareEnv
 mountPseudoFs
 # install extra modules
