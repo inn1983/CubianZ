@@ -927,6 +927,7 @@ while [ ! -z "$opt" ];do
         echoRed "Build Linux kernel 3.4 for A20";
         gitOpt="--git-dir=${LINUX_REPO_A20_3_4}/.git --work-tree=${LINUX_REPO_A20_3_4}/"
         if [ ! -d $LINUX_REPO_A20_3_4 ];then
+			git --git-dir=${LINUX_REPO}/.git --work-tree=${LINUX_REPO} checkout $LINUX_A20_3_4
             git clone $LINUX_REPO $LINUX_REPO_A20_3_4
         fi
         branchName=$(git $gitOpt rev-parse --abbrev-ref HEAD)
