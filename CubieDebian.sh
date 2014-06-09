@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 #################
 # CONFIGURATION #
@@ -15,7 +15,8 @@ A20="a20"
 # SD Card mount point
 SD_MNT_POINT="${CWD}/mnt"
 
-HTTP_PROXY="http://127.0.0.1:8087"
+#HTTP_PROXY="http://127.0.0.1:8087"
+HTTP_PROXY=
 
 UBOOT_REPO="${CWD}/u-boot-sunxi"
 UBOOT_REPO_A10_MMC="${CWD}/u-boot-sunxi-a10-mmc"
@@ -184,7 +185,8 @@ if [ "$branchName" != "$FS_UPDATE_BASE" ]; then
     git $gitOpt clean -df
     git $gitOpt checkout ${FS_UPDATE_BASE}
 fi
-git $gitOpt pull
+#git $gitOpt pull
+git $gitOpt checkout 1d5d3268c38fe7a900686d1516b677dc76849326
 }
 
 initRepo() {
@@ -901,6 +903,7 @@ while [ ! -z "$opt" ];do
         echoRed "Build Linux kernel 3.3 for A20";
         gitOpt="--git-dir=${LINUX_REPO_A20_3_3}/.git --work-tree=${LINUX_REPO_A20_3_3}/"
         if [ ! -d $LINUX_REPO_A20_3_3 ];then
+			git --git-dir=${LINUX_REPO}/.git --work-tree=${LINUX_REPO} checkout $LINUX_A20_3_3
             git clone $LINUX_REPO $LINUX_REPO_A20_3_3
         fi
         branchName=$(git $gitOpt rev-parse --abbrev-ref HEAD)
