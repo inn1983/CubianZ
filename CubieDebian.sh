@@ -93,7 +93,7 @@ DEB_ADMIN_UTILITIES="inotify-tools ifplugd ntpdate rsync parted lsof psmisc dosf
 DEB_CPU_UTILITIES="cpufrequtils sysfsutils"
 DEB_SOUND="alsa-base alsa-utils"
 DEB_FIRMWARES="firmware-ralink"
-DEB_EXTRAPACKAGES="${DEB_TEXT_EDITORS} ${DEB_PROGRAMMING_LANGUAGES} ${DEB_TEXT_UTILITIES} ${DEB_WIRELESS_TOOLS} ${DEB_ADMIN_UTILITIES} ${DEB_CPU_UTILITIES} ${DEB_SOUND} ${DEB_FIRMWARES}" 
+DEB_EXTRAPACKAGES="${DEB_TEXT_EDITORS} ${DEB_PROGRAMMING_LANGUAGES} ${DEB_TEXT_UTILITIES} ${DEB_WIRELESS_TOOLS} ${DEB_ADMIN_UTILITIES} ${DEB_CPU_UTILITIES} ${DEB_SOUND} ${DEB_FIRMWARES} udevil systemd" 
 # Not all packages can (or should be) reconfigured this way.
 DPKG_RECONFIG="locales tzdata"
 
@@ -185,8 +185,8 @@ if [ "$branchName" != "$FS_UPDATE_BASE" ]; then
     git $gitOpt clean -df
     git $gitOpt checkout ${FS_UPDATE_BASE}
 fi
-#git $gitOpt pull
-git $gitOpt checkout 1d5d3268c38fe7a900686d1516b677dc76849326
+git $gitOpt pull
+#git $gitOpt checkout 1d5d3268c38fe7a900686d1516b677dc76849326
 }
 
 initRepo() {
@@ -439,13 +439,33 @@ rsync --exclude *.patch -av ${FS_UPDATE_REPO_BASE}/common/* ${ROOTFS_DIR}
 find ${FS_UPDATE_REPO_BASE}/common/ -type f -name "*.patch" | while read patch; do applyPatch "${FS_UPDATE_REPO_BASE}/common/" "$patch";done
 
 # green led ctrl
-LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} update-rc.d "cubian-bootled" defaults
-LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} update-rc.d "cubian-blinknetworkled" defaults
-LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} update-rc.d "cubian-local" defaults
-LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} update-rc.d "cubian-fixrandomemac" start 10 S . stop
-LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} update-rc.d "cubian-firstrun" start 20 S . stop
-LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} update-rc.d "cubian-ondemandcpufreq" start 80 2 3 4 5 . stop
-LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} update-rc.d "cubian-gpiopermission" start 80 2 3 4 5 . stop
+if [ -e ${ROOTFS_DIR}/etc/init.d/cubian-bootled ];then
+	LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} update-rc.d "cubian-bootled" defaults
+fi
+
+if [ -e ${ROOTFS_DIR}/etc/init.d/cubian-blinknetworkled ];then
+	LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} update-rc.d "cubian-blinknetworkled" defaults
+fi
+
+if [ -e ${ROOTFS_DIR}/etc/init.d/cubian-local ];then
+	LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} update-rc.d "cubian-local" defaults
+fi
+
+if [ -e ${ROOTFS_DIR}/etc/init.d/cubian-fixrandomemac ];then
+	LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} update-rc.d "cubian-fixrandomemac" start 10 S . stop
+fi
+
+if [ -e ${ROOTFS_DIR}/etc/init.d/cubian-firstrun ];then
+	LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} update-rc.d "cubian-firstrun" start 20 S . stop
+fi
+
+if [ -e ${ROOTFS_DIR}/etc/init.d/cubian-ondemandcpufreq ];then
+	LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} update-rc.d "cubian-ondemandcpufreq" start 80 2 3 4 5 . stop
+fi
+
+if [ -e ${ROOTFS_DIR}/etc/init.d/cubian-gpiopermission ];then
+	LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} update-rc.d "cubian-gpiopermission" start 80 2 3 4 5 . stop
+fi
 
 # clean cache
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} apt-get update
