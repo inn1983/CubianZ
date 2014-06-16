@@ -1036,8 +1036,11 @@ while [ ! -z "$opt" ];do
         SD_PATH=${SD_PATH_RAW}
         echo "format device"
         formatSD $IMAGE_ROOT_SIZE
+		kpartx -avs $SD_PATH
+		TMP_BASENAME=`basename $SD_PATH`
+		SD_PATH="/dev/mapper/${TMP_BASENAME}"
         SD_PATH="${SD_PATH}p"
-        echo "Transferring system"
+		echo "Transferring system"
         installRoot
         SD_PATH=${SD_PATH_RAW}
         echo "Install MBR"
