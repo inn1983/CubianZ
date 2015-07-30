@@ -1,90 +1,12 @@
-[submodule "linux-sunxi"]
-	path = linux-sunxi
-	url = https://github.com/mmplayer/linux-sunxi.git
 [submodule "sunxi-boards"]
 	path = sunxi-boards
 	url = https://github.com/mmplayer/sunxi-boards.git
-[submodule "lib/PCRE"]
-	path = lib/PCRE
-	url = https://github.com/mmplayer/PCRE.git
-[submodule "lib/APR"]
-	path = lib/APR
-	url = https://github.com/mmplayer/APR.git
-[submodule "lib/APR-util"]
-	path = lib/APR-util
-	url = https://github.com/mmplayer/APR-util.git
-[submodule "lib/APR-iconv"]
-	path = lib/APR-iconv
-	url = https://github.com/mmplayer/APR-iconv.git
-[submodule "lib/httpd"]
-	path = lib/httpd
-	url = https://github.com/mmplayer/httpd.git
-[submodule "lib/php5"]
-	path = lib/php5
-	url = https://github.com/mmplayer/php.git
-[submodule "lib/MySQL"]
-	path = lib/MySQL
-	url = https://github.com/mmplayer/MySQL.git
-[submodule "lib/ncurses"]
-	path = lib/ncurses
-	url = https://github.com/mmplayer/ncurses.git
-[submodule "lib/openldap"]
-	path = lib/openldap
-	url = https://github.com/mmplayer/openldap.git
-[submodule "lib/zlib"]
-	path = lib/zlib
-	url = https://github.com/mmplayer/zlib.git
-[submodule "lib/openssl"]
-	path = lib/openssl
-	url = https://github.com/mmplayer/openssl.git
-[submodule "lib/readline"]
-	path = lib/readline
-	url = https://github.com/mmplayer/readline.git
-[submodule "lib/SQLite"]
-	path = lib/SQLite
-	url = https://github.com/mmplayer/SQLite.git
-[submodule "lib/expat"]
-	path = lib/expat
-	url = https://github.com/mmplayer/expat.git
-[submodule "lib/lua"]
-	path = lib/lua
-	url = https://github.com/mmplayer/lua.git
-[submodule "lib/bzip2"]
-	path = lib/bzip2
-	url = https://github.com/mmplayer/bzip2.git
-[submodule "lib/jpeg"]
-	path = lib/jpeg
-	url = https://github.com/mmplayer/JPEG.git
-[submodule "lib/png"]
-	path = lib/png
-	url = https://github.com/mmplayer/PNG.git
-[submodule "lib/freetype"]
-	path = lib/freetype
-	url = https://github.com/mmplayer/freetype.git
-[submodule "lib/xml2"]
-	path = lib/xml2
-	url = https://github.com/mmplayer/libxml2.git
-[submodule "lib/cURL"]
-	path = lib/cURL
-	url = https://github.com/mmplayer/cURL.git
-[submodule "lib/mcrypt"]
-	path = lib/mcrypt
-	url = https://github.com/mmplayer/mcrypt.git
-[submodule "lib/gmp"]
-	path = lib/gmp
-	url = https://github.com/mmplayer/GMP.git
-[submodule "lib/xslt"]
-	path = lib/xslt
-	url = https://github.com/mmplayer/xslt.git
 [submodule "sunxi-tools"]
 	path = sunxi-tools
 	url = https://github.com/mmplayer/sunxi-tools.git
 [submodule "u-boot-sunxi"]
 	path = u-boot-sunxi
 	url = https://github.com/mmplayer/u-boot-sunxi.git
-[submodule "toolchain"]
-	path = toolchain
-	url = https://github.com/cubieplayer/Toolchain.git
 [submodule "kernel-config"]
 	path = kernel-config
 	url = https://github.com/mmplayer/sunxi-kernel-config.git

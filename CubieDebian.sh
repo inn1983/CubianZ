@@ -35,7 +35,7 @@ UBOOT_A20_MMC_FIXED_MACHID="stage/a20-mmc-fixed-machid"
 UBOOT_A20_NAND="stage/a20-nand"
 UBOOT_A20_NAND_FIXED_MACHID="stage/a20-nand-fixed-machid"
 
-LINUX_REPO="${CWD}/linux-sunxi"
+LINUX_REPO="${CWD}/../linux-sunxi"
 LINUX_REPO_A10="${CWD}/linux-sunxi-a10"
 LINUX_REPO_A20_3_4="${CWD}/linux-sunxi-a20-3.4"
 LINUX_REPO_A20_3_3="${CWD}/linux-sunxi-a20-3.3"
@@ -87,7 +87,7 @@ DEB_HOSTNAME="Cubian"
 # Currently ntp module triggers an error when install
 DEB_WIRELESS_TOOLS="wireless-tools wpasupplicant"
 DEB_TEXT_EDITORS="nvi vim"
-DEB_PROGRAMMING_LANGUAGES="python"
+#DEB_PROGRAMMING_LANGUAGES="python"
 DEB_TEXT_UTILITIES="locales ssh expect sudo"
 DEB_ADMIN_UTILITIES="inotify-tools ifplugd ntpdate rsync parted lsof psmisc dosfstools at"
 DEB_CPU_UTILITIES="cpufrequtils sysfsutils"
@@ -95,7 +95,7 @@ DEB_SOUND="alsa-base alsa-utils"
 DEB_FIRMWARES="firmware-ralink"
 DEB_EXTRAPACKAGES="${DEB_TEXT_EDITORS} ${DEB_PROGRAMMING_LANGUAGES} ${DEB_TEXT_UTILITIES} ${DEB_WIRELESS_TOOLS} ${DEB_ADMIN_UTILITIES} ${DEB_CPU_UTILITIES} ${DEB_SOUND} ${DEB_FIRMWARES} udevil systemd" 
 # Not all packages can (or should be) reconfigured this way.
-DPKG_RECONFIG="locales tzdata"
+#DPKG_RECONFIG="locales tzdata"
 
 # Make sure this is valid and is really your SD..
 SD_PATH="/dev/sdb"
@@ -126,8 +126,8 @@ BASESYS_CONFIG_BACKUP="${DEVELOPMENT_CODE}.basesys.config.tar.gz"
 BASESYS_FINAL_BACKUP="${DEVELOPMENT_CODE}.basesys.final.tar.gz"
 
 # Accounts
-DEFAULT_USERNAME="cubie"
-DEFAULT_PASSWD="cubie"
+DEFAULT_USERNAME="zuiki"
+DEFAULT_PASSWD="zuiki"
 
 # Cubina image Size
 # 1G minus 100MB
@@ -366,10 +366,9 @@ configSys(){
 prepareEnv
 mountPseudoFs
 # prompt to config local and timezone
-if promptyn "Configure locale and timezone data?"; then
-    if [ -n "${DPKG_RECONFIG}" ]; then
-    LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} dpkg-reconfigure ${DPKG_RECONFIG}
-    fi
+if promptyn "Configure timezone data?"; then
+    LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} sh -c "echo "Asia/Tokyo" > /etc/timezone"
+    LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} dpkg-reconfigure -f noninteractive tzdata
 fi
 umountPseudoFs
 }
