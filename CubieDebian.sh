@@ -178,15 +178,16 @@ gitOpt="--git-dir=${FS_UPDATE_REPO_BASE}/.git --work-tree=${FS_UPDATE_REPO_BASE}
 if [ ! -d $FS_UPDATE_REPO_BASE ];then
     git clone $FS_UPDATE_REPO $FS_UPDATE_REPO_BASE
 fi
-branchName=$(git $gitOpt rev-parse --abbrev-ref HEAD)
-if [ "$branchName" != "$FS_UPDATE_BASE" ]; then
-    echoRed "Switch branch to ${FS_UPDATE_BASE}"
-    git $gitOpt reset --hard
-    git $gitOpt clean -df
-    git $gitOpt checkout ${FS_UPDATE_BASE}
-fi
-git $gitOpt pull
-#git $gitOpt checkout 1d5d3268c38fe7a900686d1516b677dc76849326
+#branchName=$(git $gitOpt rev-parse --abbrev-ref HEAD)
+#if [ "$branchName" != "$FS_UPDATE_BASE" ]; then
+#    echoRed "Switch branch to ${FS_UPDATE_BASE}"
+#    git $gitOpt reset --hard
+#    git $gitOpt clean -df
+#    git $gitOpt checkout ${FS_UPDATE_BASE}
+#fi
+#git $gitOpt pull
+
+git $gitOpt checkout 0a8b440c6f76a31f17437bd18317f639fd8d25a5
 }
 
 initRepo() {
