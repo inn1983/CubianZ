@@ -18,6 +18,8 @@ SD_MNT_POINT="${CWD}/mnt"
 #HTTP_PROXY="http://127.0.0.1:8087"
 HTTP_PROXY=
 
+CROSS_COMPILER=arm-linux-gnueabihf-
+
 UBOOT_REPO="${CWD}/u-boot-sunxi"
 UBOOT_REPO_A10_MMC="${CWD}/u-boot-sunxi-a10-mmc"
 UBOOT_REPO_A10_NAND="${CWD}/u-boot-sunxi-a10-nand"
@@ -197,33 +199,33 @@ git submodule init
 git submodule update
 }
 
-buildUBoot() {
-if [ "$1" == "$UBOOT_REPO_A20_MMC" ];then
-CROSS_COMPILER=arm-none-linux-gnueabi-
-make -C $1 distclean CROSS_COMPILE=$CROSS_COMPILER
-make -C $1 cubieboard2 CROSS_COMPILE=$CROSS_COMPILER
-elif [ "$1" == "$UBOOT_REPO_A20_MMC_FIXED_MACHID" ];then
-CROSS_COMPILER=arm-none-linux-gnueabi-
-make -C $1 distclean CROSS_COMPILE=$CROSS_COMPILER
-make -C $1 cubieboard2 CROSS_COMPILE=$CROSS_COMPILER
-elif [ "$1" == "$UBOOT_REPO_A20_NAND" ];then
-CROSS_COMPILER=arm-none-linux-gnueabi-
-make -C $1 distclean CROSS_COMPILE=$CROSS_COMPILER
-make -C $1 sun7i CROSS_COMPILE=$CROSS_COMPILER
-elif [ "$1" == "$UBOOT_REPO_A20_NAND_FIXED_MACHID" ];then
-CROSS_COMPILER=arm-none-linux-gnueabi-
-make -C $1 distclean CROSS_COMPILE=$CROSS_COMPILER
-make -C $1 sun7i CROSS_COMPILE=$CROSS_COMPILER
-elif [ "$1" == "$UBOOT_REPO_A10_MMC" ];then
-CROSS_COMPILER=arm-none-linux-gnueabi-
-make -C $1 distclean CROSS_COMPILE=$CROSS_COMPILER
-make -C $1 cubieboard CROSS_COMPILE=$CROSS_COMPILER
-elif [ "$1" == "$UBOOT_REPO_A10_NAND" ];then
-CROSS_COMPILER=arm-none-linux-gnueabi-
-make -C $1 distclean CROSS_COMPILE=$CROSS_COMPILER
-make -C $1 cubieboard CROSS_COMPILE=$CROSS_COMPILER
-fi
-}
+#buildUBoot() {
+#if [ "$1" == "$UBOOT_REPO_A20_MMC" ];then
+#CROSS_COMPILER=arm-none-linux-gnueabi-
+#make -C $1 distclean CROSS_COMPILE=$CROSS_COMPILER
+#make -C $1 cubieboard2 CROSS_COMPILE=$CROSS_COMPILER
+#elif [ "$1" == "$UBOOT_REPO_A20_MMC_FIXED_MACHID" ];then
+#CROSS_COMPILER=arm-none-linux-gnueabi-
+#make -C $1 distclean CROSS_COMPILE=$CROSS_COMPILER
+#make -C $1 cubieboard2 CROSS_COMPILE=$CROSS_COMPILER
+#elif [ "$1" == "$UBOOT_REPO_A20_NAND" ];then
+#CROSS_COMPILER=arm-none-linux-gnueabi-
+#make -C $1 distclean CROSS_COMPILE=$CROSS_COMPILER
+#make -C $1 sun7i CROSS_COMPILE=$CROSS_COMPILER
+#elif [ "$1" == "$UBOOT_REPO_A20_NAND_FIXED_MACHID" ];then
+#CROSS_COMPILER=arm-none-linux-gnueabi-
+#make -C $1 distclean CROSS_COMPILE=$CROSS_COMPILER
+#make -C $1 sun7i CROSS_COMPILE=$CROSS_COMPILER
+#elif [ "$1" == "$UBOOT_REPO_A10_MMC" ];then
+#CROSS_COMPILER=arm-none-linux-gnueabi-
+#make -C $1 distclean CROSS_COMPILE=$CROSS_COMPILER
+#make -C $1 cubieboard CROSS_COMPILE=$CROSS_COMPILER
+#elif [ "$1" == "$UBOOT_REPO_A10_NAND" ];then
+#CROSS_COMPILER=arm-none-linux-gnueabi-
+#make -C $1 distclean CROSS_COMPILE=$CROSS_COMPILER
+#make -C $1 cubieboard CROSS_COMPILE=$CROSS_COMPILER
+#fi
+#}
 
 buildTools() {
 make -C ${SUNXI_TOOLS_REPO} clean
@@ -1102,19 +1104,21 @@ while [ ! -z "$opt" ];do
         ;;
     303) clear;
 		echoRed "Start build u-boot for A20 MMC";
-        gitOpt="--git-dir=${UBOOT_REPO_A20_MMC}/.git --work-tree=${UBOOT_REPO_A20_MMC}/"
-        if [ ! -d $UBOOT_REPO_A20_MMC ];then
-            git clone $UBOOT_REPO $UBOOT_REPO_A20_MMC
-        fi
-        branchName=$(git $gitOpt rev-parse --abbrev-ref HEAD)
-        if [ $branchName != $UBOOT_A20_MMC ]; then
-            echoRed "Switch branch to A20"
-            git $gitOpt reset --hard
-            git $gitOpt clean -df
-            git $gitOpt checkout $UBOOT_A20_MMC
-        fi
-        git $gitOpt pull
-        buildUBoot $UBOOT_REPO_A20_MMC
+        #gitOpt="--git-dir=${UBOOT_REPO_A20_MMC}/.git --work-tree=${UBOOT_REPO_A20_MMC}/"
+        #if [ ! -d $UBOOT_REPO_A20_MMC ];then
+        #    git clone $UBOOT_REPO $UBOOT_REPO_A20_MMC
+        #fi
+        #branchName=$(git $gitOpt rev-parse --abbrev-ref HEAD)
+        #if [ $branchName != $UBOOT_A20_MMC ]; then
+        #    echoRed "Switch branch to A20"
+        #    git $gitOpt reset --hard
+        #    git $gitOpt clean -df
+        #    git $gitOpt checkout $UBOOT_A20_MMC
+        #fi
+        #git $gitOpt pull
+        #buildUBoot $UBOOT_REPO_A20_MMC
+	make -C $UBOOT_REPO distclean CROSS_COMPILE=$CROSS_COMPILER
+	make -C $UBOOT_REPO Cubietruck CROSS_COMPILE=$CROSS_COMPILER 
         echoRed "Done";
         show_menu
         ;;
