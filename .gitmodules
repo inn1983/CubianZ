@@ -16,3 +16,6 @@
 [submodule "cubian-updates"]
 	path = cubian-updates
 	url = https://github.com/cubieplayer/cubian-updates.git
+[submodule "sunxi_uImage"]
+	path = sunxi_uImage
+	url = http://scmadmin@157.7.131.132:8080/scm/git/sunxi_uImage

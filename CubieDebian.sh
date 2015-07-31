@@ -35,6 +35,7 @@ UBOOT_A20_MMC_FIXED_MACHID="stage/a20-mmc-fixed-machid"
 UBOOT_A20_NAND="stage/a20-nand"
 UBOOT_A20_NAND_FIXED_MACHID="stage/a20-nand-fixed-machid"
 
+KERNEL_PRE_BIN_REPO="${CWD}/sunxi_uImage"
 LINUX_REPO="${CWD}/../linux-sunxi"
 LINUX_REPO_A10="${CWD}/linux-sunxi-a10"
 LINUX_REPO_A20_3_4="${CWD}/linux-sunxi-a20-3.4"
@@ -76,6 +77,7 @@ DEVELOPMENT_CODE="argon"
 
 FEX_SUN4I="${CWD}/sunxi-boards/sys_config/a10/cubieboard_${DEVELOPMENT_CODE}.fex"
 FEX_SUN7I="${CWD}/sunxi-boards/sys_config/a20/cubieboard2_${DEVELOPMENT_CODE}.fex"
+FEX_SUN7I_CT="${CWD}/sunxi-boards/sys_config/a20/cubietruck_${DEVELOPMENT_CODE}.fex"
 
 FEX2BIN="${SUNXI_TOOLS_REPO}/fex2bin"
 
@@ -318,23 +320,25 @@ $FEX2BIN $scriptSrc $scriptBinary
 }
 
 installKernel() {
-cp ${CURRENT_KERNEL}/arch/arm/boot/uImage ${ROOTFS_DIR}/boot
-make -C ${CURRENT_KERNEL} STRIP=arm-none-linux-gnueabi-strip INSTALL_MOD_PATH=${ROOTFS_DIR} ARCH=arm INSTALL_MOD_STRIP=1 modules_install
-if [ "$CURRENT_KERNEL" = "$LINUX_REPO_A10" ];then
-kernelVersion="3.4.43+"
-elif [ "$CURRENT_KERNEL" = "$LINUX_REPO_A20_3_3" ];then
-kernelVersion="3.3.0+"
-elif [ "$CURRENT_KERNEL" = "$LINUX_REPO_A20_3_4" ];then
-kernelVersion="3.4.43+"
-fi
-kernelSourceLocation="/usr/src/linux-headers-${kernelVersion}"
-kernelSourcePointer1="${ROOTFS_DIR}/lib/modules/${kernelVersion}/build"
-kernelSourcePointer2="${ROOTFS_DIR}/lib/modules/${kernelVersion}/source"
-echo "create kernel headers link"
-rm $kernelSourcePointer1
-rm $kernelSourcePointer2
-ln -sf "$kernelSourceLocation" "$kernelSourcePointer1" 
-ln -sf "$kernelSourceLocation" "$kernelSourcePointer2"
+cp ${CURRENT_KERNEL}/uImage ${ROOTFS_DIR}/boot
+cp -r ${CURRENT_KERNEL}/lib ${ROOTFS_DIR}/
+
+#make -C ${CURRENT_KERNEL} STRIP=arm-none-linux-gnueabi-strip INSTALL_MOD_PATH=${ROOTFS_DIR} ARCH=arm INSTALL_MOD_STRIP=1 modules_install
+#if [ "$CURRENT_KERNEL" = "$LINUX_REPO_A10" ];then
+#kernelVersion="3.4.43+"
+#elif [ "$CURRENT_KERNEL" = "$LINUX_REPO_A20_3_3" ];then
+#kernelVersion="3.3.0+"
+#elif [ "$CURRENT_KERNEL" = "$LINUX_REPO_A20_3_4" ];then
+#kernelVersion="3.4.43+"
+#fi
+#kernelSourceLocation="/usr/src/linux-headers-${kernelVersion}"
+#kernelSourcePointer1="${ROOTFS_DIR}/lib/modules/${kernelVersion}/build"
+#kernelSourcePointer2="${ROOTFS_DIR}/lib/modules/${kernelVersion}/source"
+#echo "create kernel headers link"
+#rm $kernelSourcePointer1
+#rm $kernelSourcePointer2
+#ln -sf "$kernelSourceLocation" "$kernelSourcePointer1" 
+#ln -sf "$kernelSourceLocation" "$kernelSourcePointer2"
 }
 
 configNetwork() {
@@ -974,14 +978,17 @@ while [ ! -z "$opt" ];do
             if [ -f "${ROOTFS_DIR}/boot/boot.scr" ] && [ -f "${ROOTFS_DIR}/boot/script.bin" ];then
                 if promptyn "UBoot has been installed, reinstall?"; then
                     installBootscr
-                    installFex $FEX_SUN7I
+                    installFex $FEX_SUN7I_CT
                 fi
             else
                 installBootscr
-                installFex $FEX_SUN7I
+                installFex $FEX_SUN7I_CT
             fi
             echoRed "UBoot installed";
             echoRed "Install linux kernel";
+	    if [$CURRENT_KERNEL = ""];then
+	    	CURRENT_KERNEL=$KERNEL_PRE_BIN_REPO
+	    fi
             if [ -f "${ROOTFS_DIR}/boot/uImage" ];then
                 if promptyn "Kernel has been installed, reinstall?"; then
                     installKernel
@@ -990,8 +997,8 @@ while [ ! -z "$opt" ];do
                 installKernel
             fi
             echoRed "Kernel installed";
-            echoRed "Patch rootfs for A20"
-            patchRootfs $A20
+            #echoRed "Patch rootfs for A20"
+            #patchRootfs $A20
         else
             echo "[E] rootfs is not existed at ${ROOTFS_DIR}"
         fi
