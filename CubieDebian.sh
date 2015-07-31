@@ -529,7 +529,7 @@ parted ${SD_PATH} --script -- mkpart primary 1 $1
 }
 
 installRoot() {
-partprobe
+#partprobe
 mkfs.ext4 ${SD_PATH}1
 e2label ${SD_PATH}1 cubieboard
 sync
@@ -541,8 +541,8 @@ tar --exclude=qemu-arm-static \
 	--exclude=ssh_host_* \
 	-cf - . | tar -C ${SD_MNT_POINT} -xvf -
 touch ${SD_MNT_POINT}/root/.firstRun
-git clone ${CWD}/cubian-updates $CUBIAN_UPDATE_REPO_LOCAL
-eval ${CUBIAN_UPDATE_GIT_CMD} remote -v set-url origin $CUBIAN_UPDATE_REPO
+#git clone ${CWD}/cubian-updates $CUBIAN_UPDATE_REPO_LOCAL
+#eval ${CUBIAN_UPDATE_GIT_CMD} remote -v set-url origin $CUBIAN_UPDATE_REPO
 umount ${SD_MNT_POINT} >>/dev/null 2>&1
 cd ${PWD}
 }
@@ -550,10 +550,13 @@ cd ${PWD}
 installMBR(){
 sunxispl="${CURRENT_UBOOT}/spl/sunxi-spl.bin"
 uboot="${CURRENT_UBOOT}/u-boot.bin"
-echoRed "install spl from ${sunxispl}"
-dd if=$sunxispl of=${SD_PATH} bs=1024 seek=8
-echoRed "install uboot from ${uboot}"
-dd if=$uboot of=${SD_PATH} bs=1024 seek=32
+spl_uboot="${CURRENT_UBOOT}/u-boot-sunxi-with-spl.bin"
+#echoRed "install spl from ${sunxispl}"
+#dd if=$sunxispl of=${SD_PATH} bs=1024 seek=8
+#echoRed "install uboot from ${uboot}"
+#dd if=$uboot of=${SD_PATH} bs=1024 seek=32
+echoRed "install u-boot-sunxi-with-spl from ${spl_uboot=}"
+dd if=$spl_uboot of=${SD_PATH} bs=1024 seek=8
 }
 
 removeSD(){
@@ -1035,7 +1038,7 @@ while [ ! -z "$opt" ];do
         ;;
     205) clear;
         echoRed "make disk image 1GB"
-        IMAGE_FILE="${CWD}/${DEB_HOSTNAME}-base-r${RELEASE_VERSION_A20}-arm-a20.img"
+        IMAGE_FILE="${CWD}/${DEB_HOSTNAME}Z-base-r0-arm-ct.img"
         IMAGE_FILESIZE=$IMAGE_SIZE
         echo "create disk file ${IMAGE_FILE}"
         dd if=/dev/zero of=$IMAGE_FILE bs=1M count=$IMAGE_FILESIZE
@@ -1045,19 +1048,20 @@ while [ ! -z "$opt" ];do
         SD_PATH=${SD_PATH_RAW}
         echo "format device"
         formatSD $IMAGE_ROOT_SIZE
-		kpartx -avs $SD_PATH
-		TMP_BASENAME=`basename $SD_PATH`
-		SD_PATH="/dev/mapper/${TMP_BASENAME}"
+	kpartx -avs $SD_PATH
+	TMP_BASENAME=`basename $SD_PATH`
+	SD_PATH="/dev/mapper/${TMP_BASENAME}"
         SD_PATH="${SD_PATH}p"
-		echo "Transferring system"
+	echo "Transferring system"
         installRoot
         SD_PATH=${SD_PATH_RAW}
         echo "Install MBR"
-		if [[ "$CURRENT_KERNEL" = "$LINUX_REPO_A20_3_3" ]];then
-        	CURRENT_UBOOT="$UBOOT_REPO_A20_MMC_FIXED_MACHID"
-		elif [[ "$CURRENT_KERNEL" = "$LINUX_REPO_A20_3_4" ]];then
-        	CURRENT_UBOOT="$UBOOT_REPO_A20_MMC"
-		fi
+	#if [[ "$CURRENT_KERNEL" = "$LINUX_REPO_A20_3_3" ]];then
+          #CURRENT_UBOOT="$UBOOT_REPO_A20_MMC_FIXED_MACHID"
+	#elif [[ "$CURRENT_KERNEL" = "$LINUX_REPO_A20_3_4" ]];then
+          #CURRENT_UBOOT="$UBOOT_REPO_A20_MMC"
+	#fi
+	CURRENT_UBOOT="$UBOOT_REPO"
         installMBR
         echo "umount device ${SD_PATH}"
         umountSDSafe
