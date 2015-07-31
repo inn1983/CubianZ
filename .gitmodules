@@ -9,7 +9,7 @@
 	url = https://github.com/mmplayer/sunxi-kernel-config.git
 [submodule "fsupdate"]
 	path = fsupdate
-	url = https://github.com/mmplayer/fsupdate.git
+	url = https://github.com/inn1983/fsupdate.git
 [submodule "cubian-updates"]
 	path = cubian-updates
 	url = https://github.com/cubieplayer/cubian-updates.git

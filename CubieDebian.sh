@@ -97,6 +97,7 @@ DEB_ADMIN_UTILITIES="inotify-tools ifplugd ntpdate rsync parted lsof psmisc dosf
 DEB_CPU_UTILITIES="cpufrequtils sysfsutils"
 DEB_SOUND="alsa-base alsa-utils"
 DEB_FIRMWARES="firmware-ralink"
+DEB_SSL="openssl"
 DEB_EXTRAPACKAGES="${DEB_TEXT_EDITORS} ${DEB_PROGRAMMING_LANGUAGES} ${DEB_TEXT_UTILITIES} ${DEB_WIRELESS_TOOLS} ${DEB_ADMIN_UTILITIES} ${DEB_CPU_UTILITIES} ${DEB_SOUND} ${DEB_FIRMWARES} udevil systemd" 
 # Not all packages can (or should be) reconfigured this way.
 #DPKG_RECONFIG="locales tzdata"
@@ -432,6 +433,8 @@ echo "${DEFAULT_USERNAME}:${DEFAULT_PASSWD}"|chpasswd
 
 # disable root user
 passwd -l root
+
+echo "T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100" >> /etc/inittb
 END
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chmod +x /tmp/initsys.sh
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} /tmp/initsys.sh
