@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash
 
 #################
 # CONFIGURATION #
@@ -98,7 +98,7 @@ DEB_CPU_UTILITIES="cpufrequtils sysfsutils"
 DEB_SOUND="alsa-base alsa-utils"
 DEB_FIRMWARES="firmware-ralink"
 DEB_SSL="openssl"
-DEB_EXTRAPACKAGES="${DEB_TEXT_EDITORS} ${DEB_PROGRAMMING_LANGUAGES} ${DEB_TEXT_UTILITIES} ${DEB_WIRELESS_TOOLS} ${DEB_ADMIN_UTILITIES} ${DEB_CPU_UTILITIES} ${DEB_SOUND} ${DEB_FIRMWARES} udevil systemd" 
+DEB_EXTRAPACKAGES="${DEB_TEXT_EDITORS} ${DEB_PROGRAMMING_LANGUAGES} ${DEB_TEXT_UTILITIES} ${DEB_WIRELESS_TOOLS} ${DEB_ADMIN_UTILITIES} ${DEB_CPU_UTILITIES} ${DEB_SOUND} ${DEB_FIRMWARES} udevil systemd ${DEB_SSL}" 
 # Not all packages can (or should be) reconfigured this way.
 #DPKG_RECONFIG="locales tzdata"
 
@@ -192,7 +192,7 @@ fi
 #fi
 #git $gitOpt pull
 
-git $gitOpt checkout 0a8b440c6f76a31f17437bd18317f639fd8d25a5
+#git $gitOpt checkout 2a27133ce7fc2d3babe6ccfd57a479411c7d79d1
 }
 
 initRepo() {
@@ -434,7 +434,7 @@ echo "${DEFAULT_USERNAME}:${DEFAULT_PASSWD}"|chpasswd
 # disable root user
 passwd -l root
 
-echo "T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100" >> /etc/inittb
+echo "T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100" >> /etc/inittab
 END
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chmod +x /tmp/initsys.sh
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} /tmp/initsys.sh
