@@ -58,6 +58,8 @@ LINUX_CONFIG_BASE_SUN7I_3_3="${CWD}/kernel-config/config-cubian-base-sun7i-3.3"
 FS_UPDATE_REPO="${CWD}/fsupdate"
 FS_UPDATE_REPO_BASE="${CWD}/fsupdatebase"
 
+AUTO_SSH_REPO="${CWD}/autossh_c"
+
 CUBIAN_UPDATE_REPO_LOCAL="${SD_MNT_POINT}/root/.cubian-updates"
 CUBIAN_UPDATE_REPO="https://github.com/cubieplayer/cubian-updates.git"
 CUBIAN_UPDATE_GIT_CMD="git --git-dir=\"${CUBIAN_UPDATE_REPO_LOCAL}/.git\" --work-tree=\"${CUBIAN_UPDATE_REPO_LOCAL}\""
@@ -84,7 +86,7 @@ FEX_SUN7I_CT="${CWD}/sunxi-boards/sys_config/a20/cubietruck_${DEVELOPMENT_CODE}.
 FEX2BIN="${SUNXI_TOOLS_REPO}/fex2bin"
 
 # This will be the hostname of the cubieboard
-DEB_HOSTNAME="Cubian"
+DEB_HOSTNAME="CubianZ"
 
 # Not all packages can be install this way.
 # DEB_EXTRAPACKAGES="nvi locales ntp ssh expect"
@@ -92,13 +94,13 @@ DEB_HOSTNAME="Cubian"
 DEB_WIRELESS_TOOLS="wireless-tools wpasupplicant"
 DEB_TEXT_EDITORS="nvi vim"
 #DEB_PROGRAMMING_LANGUAGES="python"
-DEB_TEXT_UTILITIES="locales ssh expect sudo"
+DEB_UTILITIES="locales ssh sshpass expect sudo bc"
 DEB_ADMIN_UTILITIES="inotify-tools ifplugd ntpdate rsync parted lsof psmisc dosfstools at"
 DEB_CPU_UTILITIES="cpufrequtils sysfsutils"
 DEB_SOUND="alsa-base alsa-utils"
 DEB_FIRMWARES="firmware-ralink"
 DEB_SSL="openssl"
-DEB_EXTRAPACKAGES="${DEB_TEXT_EDITORS} ${DEB_PROGRAMMING_LANGUAGES} ${DEB_TEXT_UTILITIES} ${DEB_WIRELESS_TOOLS} ${DEB_ADMIN_UTILITIES} ${DEB_CPU_UTILITIES} ${DEB_SOUND} ${DEB_FIRMWARES} udevil systemd ${DEB_SSL}" 
+DEB_EXTRAPACKAGES="${DEB_TEXT_EDITORS} ${DEB_PROGRAMMING_LANGUAGES} ${DEB_UTILITIES} ${DEB_WIRELESS_TOOLS} ${DEB_ADMIN_UTILITIES} ${DEB_CPU_UTILITIES} ${DEB_SOUND} ${DEB_FIRMWARES} udevil systemd ${DEB_SSL}"
 # Not all packages can (or should be) reconfigured this way.
 #DPKG_RECONFIG="locales tzdata"
 
@@ -255,10 +257,12 @@ mountPseudoFs(){
 mount --bind /dev     ${ROOTFS_DIR}/dev
 mount --bind /proc    ${ROOTFS_DIR}/proc
 mount --bind /sys     ${ROOTFS_DIR}/sys
+mount --bind /dev/pts     ${ROOTFS_DIR}/dev/pts
 }
 
 umountPseudoFs(){
 sync
+umount -l ${ROOTFS_DIR}/dev/pts
 umount -l ${ROOTFS_DIR}/dev
 umount -l ${ROOTFS_DIR}/proc
 umount -l ${ROOTFS_DIR}/sys
@@ -301,6 +305,13 @@ LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} apt-get
 LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} apt-get -y upgrade
 LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} apt-get -y install ${DEB_EXTRAPACKAGES}
 fi
+# install nodejs
+#LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} apt-get -y install curl
+LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} wget --no-check-certificate https://deb.nodesource.com/setup_0.12 -O /tmp/nodejssetup.sh
+LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} bash /tmp/nodejssetup.sh
+LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} apt-get -y install nodejs
+#LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} npm install forever -g
+
 umountPseudoFs
 }
 
@@ -435,6 +446,7 @@ echo "${DEFAULT_USERNAME}:${DEFAULT_PASSWD}"|chpasswd
 passwd -l root
 
 echo "T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100" >> /etc/inittab
+
 END
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chmod +x /tmp/initsys.sh
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} /tmp/initsys.sh
@@ -475,6 +487,32 @@ fi
 if [ -e ${ROOTFS_DIR}/etc/init.d/cubian-gpiopermission ];then
 	LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} update-rc.d "cubian-gpiopermission" start 80 2 3 4 5 . stop
 fi
+
+#install autossh of zuiki
+cp ${AUTO_SSH_REPO}/c_src/ssh_connec ${ROOTFS_DIR}/usr/bin/. 
+LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chown ${DEFAULT_USERNAME}:${DEFAULT_USERNAME} /usr/bin/ssh_connec
+
+#for security Don't run Node.js as root.
+cp -r ${AUTO_SSH_REPO}/js_src/ ${ROOTFS_DIR}/etc/autossh_monitor
+LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chown -R ${DEFAULT_USERNAME}:${DEFAULT_USERNAME} /etc/autossh_monitor 
+
+cat > ${ROOTFS_DIR}/etc/zuiki_autossh.sh <<END
+#!/bin/bash
+IF="eth0"
+
+if /sbin/ifconfig \$IF | grep -q "inet addr:" ; then
+	echo "network ok."
+else
+	dhclient -r \$IF
+	dhclient \$IF
+	sleep 2
+fi
+
+cd /etc/autossh_monitor
+su -s /bin/bash -c "./node_modules/.bin/forever start monitor_rest.js" ${DEFAULT_USERNAME}
+END
+LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chmod a+x /etc/zuiki_autossh.sh
+#echo '/etc/zuiki_autossh.sh' >> ${ROOTFS_DIR}/etc/rc.local
 
 # clean cache
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} apt-get update
@@ -1041,7 +1079,7 @@ while [ ! -z "$opt" ];do
         ;;
     205) clear;
         echoRed "make disk image 1GB"
-        IMAGE_FILE="${CWD}/${DEB_HOSTNAME}Z-base-r0-arm-ct.img"
+        IMAGE_FILE="${CWD}/${DEB_HOSTNAME}-base-r1-arm-ct.img"
         IMAGE_FILESIZE=$IMAGE_SIZE
         echo "create disk file ${IMAGE_FILE}"
         dd if=/dev/zero of=$IMAGE_FILE bs=1M count=$IMAGE_FILESIZE
