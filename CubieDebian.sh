@@ -510,6 +510,8 @@ fi
 
 cd /etc/autossh_monitor
 su -s /bin/bash -c "./node_modules/.bin/forever start monitor_rest.js" ${DEFAULT_USERNAME}
+sleep 2
+sudo ./node_modules/.bin/forever start monitor_client.js
 END
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chmod a+x /etc/zuiki_autossh.sh
 #echo '/etc/zuiki_autossh.sh' >> ${ROOTFS_DIR}/etc/rc.local
@@ -1110,6 +1112,7 @@ while [ ! -z "$opt" ];do
         SD_PATH=${SD_PATH_OLD}
         echo  "compressing image"
         7z a -mx=9 ${IMAGE_FILE}.7z $IMAGE_FILE
+	kpartx -d $SD_PATH_RAW
         show_menu
         ;;
     301) clear;
