@@ -91,14 +91,14 @@ DEB_HOSTNAME="CubianZ"
 # Not all packages can be install this way.
 # DEB_EXTRAPACKAGES="nvi locales ntp ssh expect"
 # Currently ntp module triggers an error when install
-DEB_WIRELESS_TOOLS="wireless-tools wpasupplicant"
-DEB_TEXT_EDITORS="nvi vim"
+#DEB_WIRELESS_TOOLS="wireless-tools wpasupplicant"
+#DEB_TEXT_EDITORS="nvi vim"
 #DEB_PROGRAMMING_LANGUAGES="python"
 DEB_UTILITIES="locales ssh sshpass expect sudo bc"
-DEB_ADMIN_UTILITIES="inotify-tools ifplugd ntpdate rsync parted lsof psmisc dosfstools at"
+DEB_ADMIN_UTILITIES="ifplugd ntpdate rsync parted lsof psmisc dosfstools at"
 DEB_CPU_UTILITIES="cpufrequtils sysfsutils"
 DEB_SOUND="alsa-base alsa-utils"
-DEB_FIRMWARES="firmware-ralink"
+#DEB_FIRMWARES="firmware-ralink"
 DEB_SSL="openssl"
 DEB_EXTRAPACKAGES="${DEB_TEXT_EDITORS} ${DEB_PROGRAMMING_LANGUAGES} ${DEB_UTILITIES} ${DEB_WIRELESS_TOOLS} ${DEB_ADMIN_UTILITIES} ${DEB_CPU_UTILITIES} ${DEB_SOUND} ${DEB_FIRMWARES} udevil systemd ${DEB_SSL}"
 # Not all packages can (or should be) reconfigured this way.
@@ -138,7 +138,7 @@ DEFAULT_PASSWD="zuiki"
 
 # Cubina image Size
 # 1G minus 100MB
-IMAGE_SIZE=$(expr 1024 - 100)
+IMAGE_SIZE=$(expr 1500 - 100)
 IMAGE_ROOT_SIZE=$(expr $IMAGE_SIZE - 100)
 
 # If you want a static IP, use the following
@@ -250,7 +250,7 @@ if [ -d ${ROOTFS_DIR} ];then
     rm -rf ${ROOTFS_DIR}
 fi
 mkdir --parents ${ROOTFS_DIR}
-debootstrap --foreign --verbose --arch armhf wheezy ${ROOTFS_DIR}/ http://http.debian.net/debian/
+debootstrap --foreign --verbose --arch armhf jessie ${ROOTFS_DIR}/ http://http.debian.net/debian/
 }
 
 mountPseudoFs(){
@@ -283,9 +283,9 @@ LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chmod +x /tmp/addgpgkey.sh
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} /tmp/addgpgkey.sh
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} rm /tmp/addgpgkey.sh
 cat > ${ROOTFS_DIR}/etc/apt/sources.list <<END
-deb http://ftp.debian.org/debian/ wheezy main contrib non-free
-deb-src http://ftp.debian.org/debian/ wheezy main contrib non-free
-deb http://security.debian.org/ wheezy/updates main contrib non-free
+deb http://ftp.debian.org/debian/ jessie main contrib non-free
+deb-src http://ftp.debian.org/debian/ jessie main contrib non-free
+deb http://security.debian.org/ jessie/updates main contrib non-free
 deb http://packages.cubian.org/ wheezy main
 END
 mountPseudoFs
@@ -445,7 +445,8 @@ echo "${DEFAULT_USERNAME}:${DEFAULT_PASSWD}"|chpasswd
 # disable root user
 passwd -l root
 
-echo "T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100" >> /etc/inittab
+#echo "T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100" >> /etc/inittab
+systemctl enable serial-getty@ttyS0.service
 
 END
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chmod +x /tmp/initsys.sh
@@ -1081,7 +1082,7 @@ while [ ! -z "$opt" ];do
         ;;
     205) clear;
         echoRed "make disk image 1GB"
-        IMAGE_FILE="${CWD}/${DEB_HOSTNAME}-base-r1-arm-ct.img"
+        IMAGE_FILE="${CWD}/${DEB_HOSTNAME}-base-r2-arm-ct.img"
         IMAGE_FILESIZE=$IMAGE_SIZE
         echo "create disk file ${IMAGE_FILE}"
         dd if=/dev/zero of=$IMAGE_FILE bs=1M count=$IMAGE_FILESIZE
