@@ -58,6 +58,8 @@ LINUX_CONFIG_BASE_SUN7I_3_3="${CWD}/kernel-config/config-cubian-base-sun7i-3.3"
 FS_UPDATE_REPO="${CWD}/fsupdate"
 FS_UPDATE_REPO_BASE="${CWD}/fsupdatebase"
 
+DOCKER_REPO="${CWD}/docker-armhf"
+
 AUTO_SSH_REPO="${CWD}/autossh_c"
 
 CUBIAN_UPDATE_REPO_LOCAL="${SD_MNT_POINT}/root/.cubian-updates"
@@ -285,6 +287,7 @@ LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} rm /tmp/addgpgkey.sh
 cat > ${ROOTFS_DIR}/etc/apt/sources.list <<END
 deb http://ftp.debian.org/debian/ jessie main contrib non-free
 deb-src http://ftp.debian.org/debian/ jessie main contrib non-free
+deb http://ftp.debian.org/debian/ jessie-backports main contrib non-free
 deb http://security.debian.org/ jessie/updates main contrib non-free
 deb http://packages.cubian.org/ wheezy main
 END
@@ -311,6 +314,11 @@ LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} wget --
 LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} bash /tmp/nodejssetup.sh
 LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} apt-get -y install nodejs
 #LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} npm install forever -g
+
+# install docker
+LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} apt-get install -y  docker.io
+LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} mv /usr/bin/docker /usr/bin/docker.orig
+cp ${DOCKER_REPO}/bin/docker-1.7.1 ${ROOTFS_DIR}/usr/bin/docker
 
 umountPseudoFs
 }
