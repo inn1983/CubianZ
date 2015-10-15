@@ -59,6 +59,7 @@ FS_UPDATE_REPO="${CWD}/fsupdate"
 FS_UPDATE_REPO_BASE="${CWD}/fsupdatebase"
 
 AUTO_SSH_REPO="${CWD}/autossh_c"
+DOCKER_ARMHF_REPO="${CMD}/docker-armhf"
 
 CUBIAN_UPDATE_REPO_LOCAL="${SD_MNT_POINT}/root/.cubian-updates"
 CUBIAN_UPDATE_REPO="https://github.com/cubieplayer/cubian-updates.git"
@@ -496,7 +497,11 @@ LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chown ${DEFAULT_USERNAME}:${DEFA
 cp -r ${AUTO_SSH_REPO}/js_src/ ${ROOTFS_DIR}/etc/autossh_monitor
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chown -R ${DEFAULT_USERNAME}:${DEFAULT_USERNAME} /etc/autossh_monitor 
 
-cat > ${ROOTFS_DIR}/etc/zuiki_autossh.sh <<END
+#install docker
+cp ${DOCKER_ARMHF_REPO}/bin/docker-1.8.2 ${ROOTFS_DIR}/usr/bin/docker
+LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chmod a+x /usr/bin/docker
+
+cat > ${ROOTFS_DIR}/etc/zuiki_start.sh <<END
 #!/bin/bash
 IF="eth0"
 
@@ -512,9 +517,18 @@ cd /etc/autossh_monitor
 su -s /bin/bash -c "./node_modules/.bin/forever start monitor_rest.js" ${DEFAULT_USERNAME}
 sleep 2
 sudo ./node_modules/.bin/forever start monitor_client.js
+
+# docker start
+start-stop-daemon --start --background \
+	--no-close \
+	--exec /usr/bin/docker \
+	-- \
+		-d \
+		-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --insecure-registry cubieboard.info:5000 \
+			>>/var/log/docker.log 2>&1
+
 END
-LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chmod a+x /etc/zuiki_autossh.sh
-#echo '/etc/zuiki_autossh.sh' >> ${ROOTFS_DIR}/etc/rc.local
+LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chmod a+x /etc/zuiki_start.sh
 
 # clean cache
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} apt-get update
@@ -1081,7 +1095,7 @@ while [ ! -z "$opt" ];do
         ;;
     205) clear;
         echoRed "make disk image 1GB"
-        IMAGE_FILE="${CWD}/${DEB_HOSTNAME}-base-r1-arm-ct.img"
+        IMAGE_FILE="${CWD}/${DEB_HOSTNAME}-base-r1-ct-debian7.img"
         IMAGE_FILESIZE=$IMAGE_SIZE
         echo "create disk file ${IMAGE_FILE}"
         dd if=/dev/zero of=$IMAGE_FILE bs=1M count=$IMAGE_FILESIZE

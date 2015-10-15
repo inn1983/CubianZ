@@ -22,3 +22,6 @@
 [submodule "autossh_c"]
 	path = autossh_c
 	url = http://scmadmin@157.7.131.132:8080/scm/git/autossh_c
+[submodule "docker-armhf"]
+	path = docker-armhf
+	url = https://github.com/inn1983/armhf
