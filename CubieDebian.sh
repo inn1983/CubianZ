@@ -537,6 +537,15 @@ start-stop-daemon --start --background \\
 END
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chmod a+x /etc/zuiki_start.sh
 
+cat > ${ROOTFS_DIR}/home/zuiki/.cubianz.conf <<END
+network=client
+if=eth0
+groupid=none
+chipid=xxx
+END
+
+LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chmod a+r /home/zuiki/.cubianz.conf
+
 # clean cache
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} apt-get update
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} apt-get clean
