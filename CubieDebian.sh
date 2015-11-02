@@ -59,7 +59,8 @@ FS_UPDATE_REPO="${CWD}/fsupdate"
 FS_UPDATE_REPO_BASE="${CWD}/fsupdatebase"
 
 AUTO_SSH_REPO="${CWD}/autossh_c"
-DOCKER_ARMHF_REPO="${CMD}/docker-armhf"
+DOCKER_ARMHF_REPO="${CWD}/docker-armhf"
+CGROUP_REPO="${CWD}/cgroupfs-mount"
 
 CUBIAN_UPDATE_REPO_LOCAL="${SD_MNT_POINT}/root/.cubian-updates"
 CUBIAN_UPDATE_REPO="https://github.com/cubieplayer/cubian-updates.git"
@@ -311,7 +312,6 @@ fi
 LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} wget --no-check-certificate https://deb.nodesource.com/setup_0.12 -O /tmp/nodejssetup.sh
 LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} bash /tmp/nodejssetup.sh
 LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} apt-get -y install nodejs
-#LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} npm install forever -g
 
 umountPseudoFs
 }
@@ -497,6 +497,12 @@ LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chown ${DEFAULT_USERNAME}:${DEFA
 cp -r ${AUTO_SSH_REPO}/js_src/ ${ROOTFS_DIR}/etc/autossh_monitor
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chown -R ${DEFAULT_USERNAME}:${DEFAULT_USERNAME} /etc/autossh_monitor 
 
+#install pkg for docker
+LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} apt-get -y install lxc aufs-tools apparmor
+
+cp ${CGROUP_REPO}/cgroupfs-mount ${ROOTFS_DIR}/usr/local/bin/cgroupfs-mount
+cp ${CGROUP_REPO}/cgroupfs-umount ${ROOTFS_DIR}/usr/local/bin/cgroupfs-umount
+
 #install docker
 cp ${DOCKER_ARMHF_REPO}/bin/docker-1.8.2 ${ROOTFS_DIR}/usr/bin/docker
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chmod a+x /usr/bin/docker
@@ -519,12 +525,13 @@ sleep 2
 sudo ./node_modules/.bin/forever start monitor_client.js
 
 # docker start
-start-stop-daemon --start --background \
-	--no-close \
-	--exec /usr/bin/docker \
-	-- \
-		-d \
-		-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --insecure-registry cubieboard.info:5000 \
+/usr/local/bin/cgroupfs-mount
+start-stop-daemon --start --background \\
+	--no-close \\
+	--exec /usr/bin/docker \\
+	-- \\
+		-d \\
+		-H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock --insecure-registry cubieboard.info:5000 \\
 			>>/var/log/docker.log 2>&1
 
 END

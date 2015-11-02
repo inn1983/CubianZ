@@ -25,3 +25,6 @@
 [submodule "docker-armhf"]
 	path = docker-armhf
 	url = https://github.com/inn1983/armhf
+[submodule "cgroupfs-mount"]
+	path = cgroupfs-mount
+	url = https://github.com/inn1983/cgroupfs-mount
