@@ -380,6 +380,24 @@ nameserver ${DNS1}
 nameserver ${DNS2}
 END
 fi
+
+cat >> ${ROOTFS_DIR}/etc/network/interfaces <<END
+auto wlan0
+iface wlan0 inet static
+address 192.168.1.25
+        netmask 255.255.255.0
+        gateway 192.168.1.1
+	dns-nameservers 8.8.8.8
+        wpa-ssid CUBIEyin
+        wpa-psk 4323f5e0a34cab3d09b490c2e3c9a199ed10186eae030a47461fab67a7ec65d3
+END
+
+cat > ${ROOTFS_DIR}/etc/resolv.conf <<END
+nameserver 8.8.8.8
+END
+
+#LC_ALL=C LANGUAGE=C LANG=C http_proxy="$HTTP_PROXY" chroot ${ROOTFS_DIR} apt-get install -y resolvconf
+
 }
 
 configSys(){
@@ -545,6 +563,9 @@ chipid=xxx
 END
 
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} chmod a+r /home/zuiki/.cubianz.conf
+
+#enable wifi
+echo "ap6210" >> ${ROOTFS_DIR}/etc/modules
 
 # clean cache
 LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} apt-get update
@@ -1111,7 +1132,7 @@ while [ ! -z "$opt" ];do
         ;;
     205) clear;
         echoRed "make disk image 1GB"
-        IMAGE_FILE="${CWD}/${DEB_HOSTNAME}-base-r1-ct-debian7.img"
+        IMAGE_FILE="${CWD}/${DEB_HOSTNAME}-base-r1-ct-debian7-staticWifi.img"
         IMAGE_FILESIZE=$IMAGE_SIZE
         echo "create disk file ${IMAGE_FILE}"
         dd if=/dev/zero of=$IMAGE_FILE bs=1M count=$IMAGE_FILESIZE
