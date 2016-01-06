@@ -18,7 +18,7 @@
 	url = http://scmadmin@157.7.131.132:8080/scm/git/sunxi_uImage
 [submodule "u-boot-sunxi"]
 	path = u-boot-sunxi
-	url = https://github.com/mmplayer/u-boot-sunxi
+	url = https://github.com/inn1983/u-boot-sunxi
 [submodule "autossh_c"]
 	path = autossh_c
 	url = http://scmadmin@157.7.131.132:8080/scm/git/autossh_c

@@ -140,7 +140,7 @@ DEFAULT_PASSWD="zuiki"
 
 # Cubina image Size
 # 1G minus 100MB
-IMAGE_SIZE=$(expr 1024 - 100)
+IMAGE_SIZE=$(expr 1536 - 100)
 IMAGE_ROOT_SIZE=$(expr $IMAGE_SIZE - 100)
 
 # If you want a static IP, use the following
@@ -520,9 +520,9 @@ else
 fi
 
 cd /etc/autossh_monitor
-su -s /bin/bash -c "./node_modules/.bin/forever start monitor_rest.js" ${DEFAULT_USERNAME}
-sleep 2
-sudo ./node_modules/.bin/forever start monitor_client.js
+#su -s /bin/bash -c "./node_modules/.bin/forever start monitor_rest.js" ${DEFAULT_USERNAME}
+#sleep 2
+#sudo ./node_modules/.bin/forever start monitor_client.js
 
 # docker start
 /usr/local/bin/cgroupfs-mount
@@ -669,6 +669,7 @@ show_menu(){
     echo "${MENU}${NUMBER} 12)${MENU} Install packages ${NORMAL}"
     echo "${MENU}${NUMBER} 13)${MENU} Config Network & Locale & Timezone ${NORMAL}"
     echo "${MENU}${NUMBER} 14)${MENU} Config Users & Apply fsupdate${NORMAL}"
+    echo "${MENU}${NUMBER} 15)${MENU} install NDK camera"
 
     echo ""
     echo "${NORMAL}    A10${NORMAL}"
@@ -895,7 +896,14 @@ while [ ! -z "$opt" ];do
         echoRed "Done";
         show_menu
         ;;
-
+    15) clear;
+	echoRed "install camera";
+	LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} mkdir /home/wkdir
+	cp ./zuikicam_install.sh ${ROOTFS_DIR}/home/wkdir/.
+	LC_ALL=C LANGUAGE=C LANG=C chroot ${ROOTFS_DIR} /home/wkdir/zuikicam_install.sh
+	echoRed "Done";
+	show_menu
+	;;
     101) clear;
         echoRed "Build Linux kernel";
         gitOpt="--git-dir=${LINUX_REPO_A10}/.git --work-tree=${LINUX_REPO_A10}/"
@@ -1056,11 +1064,11 @@ while [ ! -z "$opt" ];do
             if [ -f "${ROOTFS_DIR}/boot/boot.scr" ] && [ -f "${ROOTFS_DIR}/boot/script.bin" ];then
                 if promptyn "UBoot has been installed, reinstall?"; then
                     installBootscr
-                    installFex $FEX_SUN7I_CT
+                    installFex $FEX_SUN7I
                 fi
             else
                 installBootscr
-                installFex $FEX_SUN7I_CT
+                installFex $FEX_SUN7I
             fi
             echoRed "UBoot installed";
             echoRed "Install linux kernel";
@@ -1111,7 +1119,7 @@ while [ ! -z "$opt" ];do
         ;;
     205) clear;
         echoRed "make disk image 1GB"
-        IMAGE_FILE="${CWD}/${DEB_HOSTNAME}-base-r1-ct-debian7.img"
+        IMAGE_FILE="${CWD}/${DEB_HOSTNAME}-base-r1-cb2-debian7.img"
         IMAGE_FILESIZE=$IMAGE_SIZE
         echo "create disk file ${IMAGE_FILE}"
         dd if=/dev/zero of=$IMAGE_FILE bs=1M count=$IMAGE_FILESIZE
